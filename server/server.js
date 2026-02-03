@@ -1,5 +1,4 @@
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
@@ -8,10 +7,23 @@ import nodemailer from "nodemailer";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+/* ===================== MOBILE-SAFE CORS (NO LIBRARY) ===================== */
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // IMPORTANT for mobile browsers
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 
-// ================= ROOT HEALTH ROUTE =================
+/* ===================== HEALTH CHECK ===================== */
 app.get("/", (req, res) => {
   res.json({
     status: "OK",
@@ -19,10 +31,10 @@ app.get("/", (req, res) => {
   });
 });
 
-// ================= FILE PATH =================
+/* ===================== FILE STORAGE ===================== */
 const filePath = path.join(process.cwd(), "messages.txt");
 
-// ================= BREVO SMTP =================
+/* ===================== SMTP (BREVO) ===================== */
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
@@ -33,7 +45,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// ================= VERIFY SMTP =================
+/* ===================== VERIFY EMAIL ===================== */
 transporter.verify((err) => {
   if (err) {
     console.error("❌ Email login failed:", err.message);
@@ -42,7 +54,7 @@ transporter.verify((err) => {
   }
 });
 
-// ================= CONTACT API =================
+/* ===================== CONTACT API ===================== */
 app.post("/api/contact", async (req, res) => {
   const { name, email, message } = req.body;
   const time = new Date().toLocaleString();
@@ -55,109 +67,63 @@ app.post("/api/contact", async (req, res) => {
   }
 
   const logMessage =
-    "📩 New Contact Message\n" +
-    "Time: " + time + "\n" +
-    "Name: " + name + "\n" +
-    "Email: " + email + "\n" +
-    "Message: " + message + "\n" +
-    "----------------------------------\n";
+    `📩 New Contact Message\n` +
+    `Time: ${time}\n` +
+    `Name: ${name}\n` +
+    `Email: ${email}\n` +
+    `Message: ${message}\n` +
+    `----------------------------------\n`;
 
-  // 1️⃣ LOG TO TERMINAL
+  // Log to terminal
   console.log(logMessage);
 
-  // 2️⃣ SAVE TO FILE
-  fs.appendFile(filePath, logMessage, (err) => {
-    if (err) console.error("❌ File save error:", err);
-  });
+  // Save to file
+  fs.appendFile(filePath, logMessage, () => {});
 
   try {
-    // 3️⃣ SEND EMAIL TO YOU
+    // Email to YOU
     await transporter.sendMail({
-      from: `"Portfolio Contact" <mfanigoud@gmail.com>`,
+      from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
       to: "mfanigoud@gmail.com",
       subject: "📩 New Portfolio Message",
       text: logMessage,
     });
 
-    // 4️⃣ AUTO-REPLY TO USER (BRANDED)
+    // Auto reply to USER
     await transporter.sendMail({
-      from: `"Fani Goud" <mfanigoud@gmail.com>`,
+      from: `"Fani Goud" <${process.env.SMTP_USER}>`,
       to: email,
       subject: "Thanks for contacting me 😊",
       html: `
-<!DOCTYPE html>
-<html>
-  <body style="margin:0;padding:0;background:#f1f5f9;">
-    <table width="100%" cellpadding="0" cellspacing="0">
-      <tr>
-        <td align="center" style="padding:40px 16px;">
-          <table style="max-width:520px;background:#ffffff;border-radius:16px;
-            font-family:Arial,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.08);">
-
-            <tr>
-              <td style="background:linear-gradient(135deg,#1E3A8A,#0D9488);
-                padding:28px;text-align:center;color:#fff;">
-                <h1 style="margin:0;font-size:22px;">Thanks for reaching out 👋</h1>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding:28px;color:#1f2937;">
-                <p>Hi <strong>${name}</strong>,</p>
-
-                <p>
-                  Thank you for contacting me through my portfolio.
-                  I’ve received your message and I’ll get back to you soon.
-                </p>
-
-                <p>
-                  Meanwhile, feel free to explore my work and connect with me:
-                </p>
-
-                <p style="margin-top:24px;">
-                  🔗 <a href="https://github.com/m-fani-goud" style="color:#1E3A8A;">GitHub</a><br/>
-                  🔗 <a href="https://linkedin.com/in/fani-goud" style="color:#1E3A8A;">LinkedIn</a>
-                </p>
-
-                <p style="margin-top:32px;">
-                  Best regards,<br/>
-                  <strong>Fani Goud</strong><br/>
-                  <span style="color:#6b7280;">Full-Stack Developer</span>
-                </p>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="background:#f9fafb;padding:16px;text-align:center;
-                font-size:12px;color:#6b7280;">
-                This is an automated message. Please do not reply.
-              </td>
-            </tr>
-
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>
+        <div style="font-family:Arial;line-height:1.6">
+          <h2>Hi ${name} 👋</h2>
+          <p>Thanks for reaching out through my portfolio.</p>
+          <p>I’ve received your message and will get back to you soon.</p>
+          <br/>
+          <p>
+            Regards,<br/>
+            <strong>Fani Goud</strong><br/>
+            Full-Stack Developer
+          </p>
+        </div>
       `,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Message sent successfully",
     });
   } catch (error) {
     console.error("❌ Email error:", error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Message saved but email failed",
     });
   }
 });
 
-// ================= SERVER START =================
+/* ===================== SERVER START ===================== */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
