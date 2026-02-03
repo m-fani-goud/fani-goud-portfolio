@@ -10,27 +10,48 @@ const fadeUp = {
 export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+    setSuccess(false);
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
     try {
-      await fetch("http://localhost:5000/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        "https://fani-goud-portfolio.onrender.com/api/contact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          mode: "cors",
+          cache: "no-cache",
+          body: JSON.stringify(data),
+        }
+      );
 
-      setSuccess(true);
-      e.target.reset();
+      if (!res.ok) {
+        throw new Error("Request failed");
+      }
 
-      setTimeout(() => setSuccess(false), 4000);
+      const result = await res.json();
+
+      if (result.success) {
+        setSuccess(true);
+        e.target.reset();
+        setTimeout(() => setSuccess(false), 4000);
+      } else {
+        throw new Error("Backend error");
+      }
     } catch (err) {
       console.error("Message failed", err);
+      setError("Failed to send message. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -60,7 +81,6 @@ export default function Contact() {
         </p>
 
         <div className="mt-20 grid md:grid-cols-2 gap-14">
-
           {/* LEFT */}
           <div className="p-10 rounded-3xl bg-stone-950/70 border border-white/10 backdrop-blur space-y-6">
             <h3 className="text-xl text-white font-medium">
@@ -123,7 +143,7 @@ export default function Contact() {
               {loading ? "Sending..." : "Send Message"}
             </button>
 
-            {/* SUCCESS MESSAGE */}
+            {/* SUCCESS */}
             {success && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -134,8 +154,12 @@ export default function Contact() {
                 Message sent successfully!
               </motion.div>
             )}
-          </form>
 
+            {/* ERROR */}
+            {error && (
+              <p className="text-red-400 text-center pt-2">{error}</p>
+            )}
+          </form>
         </div>
       </div>
     </motion.section>
