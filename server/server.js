@@ -11,13 +11,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ================= ROOT HEALTH ROUTE =================
+app.get("/", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Backend is running successfully 🚀",
+  });
+});
+
 // ================= FILE PATH =================
 const filePath = path.join(process.cwd(), "messages.txt");
 
 // ================= BREVO SMTP =================
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
+  port: Number(process.env.SMTP_PORT),
   secure: false,
   auth: {
     user: process.env.SMTP_USER,
@@ -38,6 +46,13 @@ transporter.verify((err) => {
 app.post("/api/contact", async (req, res) => {
   const { name, email, message } = req.body;
   const time = new Date().toLocaleString();
+
+  if (!name || !email || !message) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
+  }
 
   const logMessage =
     "📩 New Contact Message\n" +
@@ -78,7 +93,7 @@ app.post("/api/contact", async (req, res) => {
         <td align="center" style="padding:40px 16px;">
           <table style="max-width:520px;background:#ffffff;border-radius:16px;
             font-family:Arial,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.08);">
-            
+
             <tr>
               <td style="background:linear-gradient(135deg,#1E3A8A,#0D9488);
                 padding:28px;text-align:center;color:#fff;">
@@ -89,12 +104,14 @@ app.post("/api/contact", async (req, res) => {
             <tr>
               <td style="padding:28px;color:#1f2937;">
                 <p>Hi <strong>${name}</strong>,</p>
+
                 <p>
                   Thank you for contacting me through my portfolio.
                   I’ve received your message and I’ll get back to you soon.
                 </p>
+
                 <p>
-                  Meanwhile, feel free to explore my work and connect with me.
+                  Meanwhile, feel free to explore my work and connect with me:
                 </p>
 
                 <p style="margin-top:24px;">
@@ -123,7 +140,7 @@ app.post("/api/contact", async (req, res) => {
     </table>
   </body>
 </html>
-`,
+      `,
     });
 
     res.status(200).json({
@@ -132,6 +149,7 @@ app.post("/api/contact", async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Email error:", error.message);
+
     res.status(500).json({
       success: false,
       message: "Message saved but email failed",
