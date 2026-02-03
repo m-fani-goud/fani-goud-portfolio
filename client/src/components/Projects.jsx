@@ -42,7 +42,7 @@ const projects = [
       "A personal portfolio website designed to showcase projects, skills, and experience with a clean and responsive layout.",
     tech: ["HTML", "CSS", "JavaScript"],
     github: "https://github.com/m-fani-goud",
-    live: "https://portfolio-tbgs-gokcgtgli-mandala-fanis-projects.vercel.app",
+    live: "https://fani-goud-portfolio-m7aswdfun-mandala-fanis-projects.vercel.app",
     explanation:
       "This project helped me improve my frontend skills, focusing on layout design, responsiveness, and presenting information clearly to recruiters.",
   },
