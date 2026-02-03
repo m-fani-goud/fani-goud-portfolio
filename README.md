@@ -9,7 +9,7 @@ A modern, interactive, and fully responsive **personal portfolio website** built
 ## 🌟 Live Demo
 
 🔗 **Portfolio Website**  
-👉 https://portfolio-tbgs-gokcgtgli-mandala-fanis-projects.vercel.app  
+👉 https://fani-goud-portfolio-git-main-mandala-fanis-projects.vercel.app  
 
 ---
 
