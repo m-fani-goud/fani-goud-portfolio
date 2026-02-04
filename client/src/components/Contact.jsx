@@ -23,9 +23,6 @@ export default function Contact() {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000); // ⏱️ 15s timeout
-
     try {
       const res = await fetch(API_URL, {
         method: "POST",
@@ -33,13 +30,12 @@ export default function Contact() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-        signal: controller.signal,
       });
 
       const result = await res.json();
 
-      if (!res.ok || !result.success) {
-        throw new Error(result.message || "Failed to send message");
+      if (!result.success) {
+        throw new Error("Failed to send message");
       }
 
       setSuccess(true);
@@ -47,13 +43,8 @@ export default function Contact() {
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
       console.error("Message failed:", err);
-      setError(
-        err.name === "AbortError"
-          ? "Server took too long. Please try again."
-          : err.message || "Failed to send message."
-      );
+      setError("Message failed. Please try again.");
     } finally {
-      clearTimeout(timeout);
       setLoading(false);
     }
   };
