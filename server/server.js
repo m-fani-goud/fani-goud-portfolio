@@ -82,12 +82,12 @@ app.post("/api/contact", async (req, res) => {
 
   try {
     // Email to YOU
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
-      to: "mfanigoud@gmail.com",
-      subject: "📩 New Portfolio Message",
-      text: logMessage,
-    });
+   await transporter.sendMail({
+  from: `"Fani Goud" <mfanigoud@gmail.com>`,
+  to: "mfanigoud@gmail.com",
+  subject: "📩 New Portfolio Message",
+  text: logMessage,
+});
 
     // Auto reply to USER
     await transporter.sendMail({
