@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
@@ -8,19 +9,15 @@ dotenv.config();
 
 const app = express();
 
-/* ===================== MOBILE-SAFE CORS (NO LIBRARY) ===================== */
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // IMPORTANT for mobile browsers
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
+/* ===================== CORS ===================== */
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
+app.options("*", cors());
 app.use(express.json());
 
 /* ===================== HEALTH CHECK ===================== */
@@ -34,21 +31,24 @@ app.get("/", (req, res) => {
 /* ===================== FILE STORAGE ===================== */
 const filePath = path.join(process.cwd(), "messages.txt");
 
-/* ===================== SMTP (BREVO) ===================== */
+/* ===================== BREVO SMTP (FINAL FIX) ===================== */
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
+  host: "smtp-relay.brevo.com",
+  port: 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER,
+    user: process.env.SMTP_USER, // a17576001@smtp-brevo.com
     pass: process.env.SMTP_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false, // 🔥 REQUIRED ON RENDER
   },
 });
 
-/* ===================== VERIFY EMAIL ===================== */
+/* ===================== VERIFY SMTP ===================== */
 transporter.verify((err) => {
   if (err) {
-    console.error("❌ Email login failed:", err.message);
+    console.error("❌ Email login failed:", err);
   } else {
     console.log("✅ Email server is ready");
   }
@@ -66,32 +66,32 @@ app.post("/api/contact", async (req, res) => {
     });
   }
 
-  const logMessage =
-    `📩 New Contact Message\n` +
-    `Time: ${time}\n` +
-    `Name: ${name}\n` +
-    `Email: ${email}\n` +
-    `Message: ${message}\n` +
-    `----------------------------------\n`;
+  const logMessage = `
+📩 New Contact Message
+Time: ${time}
+Name: ${name}
+Email: ${email}
+Message: ${message}
+----------------------------------
+`;
 
-  // Log to terminal
+  /* LOG + SAVE */
   console.log(logMessage);
-
-  // Save to file
-  fs.appendFile(filePath, logMessage, () => {});
+  fs.appendFileSync(filePath, logMessage);
 
   try {
-    // Email to YOU
-   await transporter.sendMail({
-  from: `"Fani Goud" <mfanigoud@gmail.com>`,
-  to: "mfanigoud@gmail.com",
-  subject: "📩 New Portfolio Message",
-  text: logMessage,
-});
-
-    // Auto reply to USER
+    /* EMAIL TO YOU */
     await transporter.sendMail({
-      from: `"Fani Goud" <${process.env.SMTP_USER}>`,
+      from: `"Fani Goud" <mfanigoud@gmail.com>`,
+      to: "mfanigoud@gmail.com",
+      subject: "📩 New Portfolio Message",
+      text: logMessage,
+      replyTo: email, // 🔥 IMPORTANT
+    });
+
+    /* AUTO REPLY */
+    await transporter.sendMail({
+      from: `"Fani Goud" <mfanigoud@gmail.com>`,
       to: email,
       subject: "Thanks for contacting me 😊",
       html: `
@@ -114,7 +114,7 @@ app.post("/api/contact", async (req, res) => {
       message: "Message sent successfully",
     });
   } catch (error) {
-    console.error("❌ Email error:", error.message);
+    console.error("❌ Email error FULL:", error);
 
     return res.status(500).json({
       success: false,
