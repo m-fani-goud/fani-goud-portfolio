@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
-import nodemailer from "nodemailer";
+import axios from "axios";
 
 dotenv.config();
 
@@ -31,29 +31,6 @@ app.get("/", (req, res) => {
 /* ===================== FILE STORAGE ===================== */
 const filePath = path.join(process.cwd(), "messages.txt");
 
-/* ===================== BREVO SMTP ===================== */
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER, // a17576001@smtp-brevo.com
-    pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false, // Required on Render
-  },
-});
-
-/* ===================== VERIFY SMTP ===================== */
-transporter.verify((err) => {
-  if (err) {
-    console.error("❌ Email server verification failed:", err.message);
-  } else {
-    console.log("✅ Email server is ready");
-  }
-});
-
 /* ===================== CONTACT API ===================== */
 app.post("/api/contact", async (req, res) => {
   const { name, email, message } = req.body;
@@ -80,44 +57,55 @@ Message: ${message}
   fs.appendFileSync(filePath, logMessage);
 
   try {
-    /* EMAIL TO YOU */
-    await transporter.sendMail({
-      from: `"Fani Goud" <mfanigoud@gmail.com>`,
-      to: "mfanigoud@gmail.com",
-      subject: "📩 New Portfolio Message",
-      text: logMessage,
-      replyTo: email,
-    });
+    /* SEND EMAIL USING BREVO API */
+    await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "Fani Goud",
+          email: "mfanigoud@gmail.com",
+        },
+        to: [
+          {
+            email: "mfanigoud@gmail.com",
+            name: "Fani Goud",
+          },
+        ],
+        replyTo: {
+          email: email,
+          name: name,
+        },
+        subject: "📩 New Portfolio Message",
+        htmlContent: `
+          <h2>New Portfolio Contact</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <p>${message}</p>
+        `,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      }
+    );
 
-    /* AUTO REPLY TO USER */
-    await transporter.sendMail({
-      from: `"Fani Goud" <mfanigoud@gmail.com>`,
-      to: email,
-      subject: "Thanks for contacting me 😊",
-      html: `
-        <div style="font-family:Arial;line-height:1.6">
-          <h2>Hi ${name} 👋</h2>
-          <p>Thanks for reaching out through my portfolio.</p>
-          <p>I’ve received your message and will get back to you soon.</p>
-          <br/>
-          <p>
-            Regards,<br/>
-            <strong>Fani Goud</strong><br/>
-            Full-Stack Developer
-          </p>
-        </div>
-      `,
+    return res.status(200).json({
+      success: true,
+      message: "Message sent successfully",
     });
   } catch (error) {
-    // IMPORTANT: Do NOT fail user experience
-    console.error("❌ Email failed, message still saved:", error.message);
-  }
+    console.error("❌ Brevo API error:", error.response?.data || error.message);
 
-  /* ALWAYS RETURN SUCCESS */
-  return res.status(200).json({
-    success: true,
-    message: "Message received successfully",
-  });
+    // IMPORTANT: Do not fail user
+    return res.status(200).json({
+      success: true,
+      message: "Message received successfully",
+    });
+  }
 });
 
 /* ===================== SERVER START ===================== */
