@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 /* ===================== FILE STORAGE ===================== */
 const filePath = path.join(process.cwd(), "messages.txt");
 
-/* ===================== BREVO SMTP (FINAL FIX) ===================== */
+/* ===================== BREVO SMTP ===================== */
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
@@ -41,14 +41,14 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASS,
   },
   tls: {
-    rejectUnauthorized: false, // 🔥 REQUIRED ON RENDER
+    rejectUnauthorized: false, // Required on Render
   },
 });
 
 /* ===================== VERIFY SMTP ===================== */
 transporter.verify((err) => {
   if (err) {
-    console.error("❌ Email login failed:", err);
+    console.error("❌ Email server verification failed:", err.message);
   } else {
     console.log("✅ Email server is ready");
   }
@@ -75,7 +75,7 @@ Message: ${message}
 ----------------------------------
 `;
 
-  /* LOG + SAVE */
+  /* SAVE MESSAGE */
   console.log(logMessage);
   fs.appendFileSync(filePath, logMessage);
 
@@ -86,10 +86,10 @@ Message: ${message}
       to: "mfanigoud@gmail.com",
       subject: "📩 New Portfolio Message",
       text: logMessage,
-      replyTo: email, // 🔥 IMPORTANT
+      replyTo: email,
     });
 
-    /* AUTO REPLY */
+    /* AUTO REPLY TO USER */
     await transporter.sendMail({
       from: `"Fani Goud" <mfanigoud@gmail.com>`,
       to: email,
@@ -108,19 +108,16 @@ Message: ${message}
         </div>
       `,
     });
-
-    return res.status(200).json({
-      success: true,
-      message: "Message sent successfully",
-    });
   } catch (error) {
-    console.error("❌ Email error FULL:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Message saved but email failed",
-    });
+    // IMPORTANT: Do NOT fail user experience
+    console.error("❌ Email failed, message still saved:", error.message);
   }
+
+  /* ALWAYS RETURN SUCCESS */
+  return res.status(200).json({
+    success: true,
+    message: "Message received successfully",
+  });
 });
 
 /* ===================== SERVER START ===================== */
