@@ -1,33 +1,27 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
-import axios from "axios";
-
-dotenv.config();
 
 const app = express();
 
-/* ===================== BASIC SETUP ===================== */
-app.use(cors({ origin: "*", methods: ["GET", "POST"] }));
+app.use(cors());
 app.use(express.json());
 
-/* ===================== HEALTH CHECK ===================== */
+// health check
 app.get("/", (req, res) => {
   res.json({
     status: "OK",
-    message: "Backend is running successfully 🚀",
+    message: "Backend running 🚀",
   });
 });
 
-/* ===================== FILE STORAGE ===================== */
+// file storage
 const filePath = path.join(process.cwd(), "messages.txt");
 
-/* ===================== CONTACT API ===================== */
+// contact api (ONLY SAVE TO FILE)
 app.post("/api/contact", (req, res) => {
   const { name, email, message } = req.body;
-  const time = new Date().toLocaleString();
 
   if (!name || !email || !message) {
     return res.status(400).json({
@@ -36,70 +30,34 @@ app.post("/api/contact", (req, res) => {
     });
   }
 
-  const logMessage = `
-📩 New Contact Message
-Time: ${time}
+  const log = `
+-----------------------------
+Time: ${new Date().toLocaleString()}
 Name: ${name}
 Email: ${email}
-Message: ${message}
-----------------------------------
+Message:
+${message}
+-----------------------------
 `;
 
-  /* SAVE MESSAGE (ALWAYS WORKS) */
-  console.log(logMessage);
-  fs.appendFileSync(filePath, logMessage);
+  try {
+    fs.appendFileSync(filePath, log);
+    console.log("✅ Message saved");
 
-  /* ✅ RESPOND IMMEDIATELY (NO TIMEOUT EVER) */
-  res.status(200).json({
-    success: true,
-    message: "Message received successfully",
-  });
-
-  /* 🔁 SEND EMAIL IN BACKGROUND (OPTIONAL) */
-  (async () => {
-    try {
-      await axios.post(
-        "https://api.brevo.com/v3/smtp/email",
-        {
-          sender: {
-            name: "Fani Goud",
-            email: "mfanigoud@gmail.com",
-          },
-          to: [
-            {
-              email: "mfanigoud@gmail.com",
-              name: "Fani Goud",
-            },
-          ],
-          replyTo: {
-            email: email,
-            name: name,
-          },
-          subject: "📩 New Portfolio Message",
-          htmlContent: `
-            <h2>New Portfolio Contact</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Message:</strong></p>
-            <p>${message}</p>
-          `,
-        },
-        {
-          headers: {
-            "api-key": process.env.BREVO_API_KEY,
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-        }
-      );
-    } catch (err) {
-      console.error("Email failed (background):", err.message);
-    }
-  })();
+    res.json({
+      success: true,
+      message: "Message sent successfully",
+    });
+  } catch (err) {
+    console.error("❌ File error", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to save message",
+    });
+  }
 });
 
-/* ===================== START SERVER ===================== */
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
