@@ -74,7 +74,7 @@ export default function Hero() {
           {/* SOCIAL ICONS */}
           <div className="mt-8 flex gap-6 text-2xl text-gray-400">
             <a
-              href="https://github.com/YOUR_GITHUB_USERNAME"
+              href="https://github.com/m-fani-goud"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition"
@@ -83,7 +83,7 @@ export default function Hero() {
             </a>
 
             <a
-              href="https://www.linkedin.com/in/YOUR_LINKEDIN_USERNAME/"
+              href="https://www.linkedin.com/in/fani-goud/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition"

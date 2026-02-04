@@ -7,6 +7,8 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
+const API_URL = "https://fani-goud-portfolio.onrender.com/api/contact";
+
 export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -21,34 +23,37 @@ export default function Contact() {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000); // ⏱️ 15s timeout
+
     try {
-      const res = await fetch(
-        "https://fani-goud-portfolio.onrender.com/api/contact",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        signal: controller.signal,
+      });
 
       const result = await res.json();
 
-      if (!res.ok) {
+      if (!res.ok || !result.success) {
         throw new Error(result.message || "Failed to send message");
       }
 
       setSuccess(true);
       e.target.reset();
-
-      setTimeout(() => {
-        setSuccess(false);
-      }, 4000);
+      setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
       console.error("Message failed:", err);
-      setError(err.message || "Failed to send message. Please try again.");
+      setError(
+        err.name === "AbortError"
+          ? "Server took too long. Please try again."
+          : err.message || "Failed to send message."
+      );
     } finally {
+      clearTimeout(timeout);
       setLoading(false);
     }
   };
@@ -77,11 +82,9 @@ export default function Contact() {
         </p>
 
         <div className="mt-20 grid md:grid-cols-2 gap-14">
-          {/* LEFT — CONTACT INFO */}
+          {/* LEFT */}
           <div className="p-10 rounded-3xl bg-stone-950/70 border border-white/10 backdrop-blur space-y-6">
-            <h3 className="text-xl text-white font-medium">
-              Let’s Connect
-            </h3>
+            <h3 className="text-xl text-white font-medium">Let’s Connect</h3>
 
             <div className="space-y-4 text-gray-300">
               <div className="flex items-center gap-3">
@@ -130,16 +133,13 @@ export default function Contact() {
             <button
               type="submit"
               disabled={loading}
-              className={`
-                w-full py-4 rounded-xl font-medium
-                ${loading ? "bg-gray-500" : "bg-yellow-400 hover:scale-[1.03]"}
-                text-black transition
-              `}
+              className={`w-full py-4 rounded-xl font-medium ${
+                loading ? "bg-gray-500" : "bg-yellow-400 hover:scale-[1.03]"
+              } text-black transition`}
             >
               {loading ? "Sending..." : "Send Message"}
             </button>
 
-            {/* SUCCESS MESSAGE */}
             {success && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -151,11 +151,8 @@ export default function Contact() {
               </motion.div>
             )}
 
-            {/* ERROR MESSAGE */}
             {error && (
-              <p className="text-red-400 text-center pt-2">
-                {error}
-              </p>
+              <p className="text-red-400 text-center pt-2">{error}</p>
             )}
           </form>
         </div>

@@ -10,7 +10,7 @@ import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import ScrollIndicator from "./components/ScrollIndicator";
 import AnimatedCursor from "./components/AnimatedCursor";
-
+import SocialBar from "./components/SocialBar";
 function App() {
   const [introDone, setIntroDone] = useState(false);
 
@@ -32,6 +32,7 @@ function App() {
           <Footer />
 
           <ScrollToTop />
+          <SocialBar />
         </>
       )}
     </>
