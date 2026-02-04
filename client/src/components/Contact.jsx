@@ -28,30 +28,26 @@ export default function Contact() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json",
           },
-          mode: "cors",
-          cache: "no-cache",
           body: JSON.stringify(data),
         }
       );
 
-      if (!res.ok) {
-        throw new Error("Request failed");
-      }
-
       const result = await res.json();
 
-      if (result.success) {
-        setSuccess(true);
-        e.target.reset();
-        setTimeout(() => setSuccess(false), 4000);
-      } else {
-        throw new Error("Backend error");
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to send message");
       }
+
+      setSuccess(true);
+      e.target.reset();
+
+      setTimeout(() => {
+        setSuccess(false);
+      }, 4000);
     } catch (err) {
-      console.error("Message failed", err);
-      setError("Failed to send message. Please try again.");
+      console.error("Message failed:", err);
+      setError(err.message || "Failed to send message. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -67,7 +63,7 @@ export default function Contact() {
       viewport={{ once: true }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      {/* Glow */}
+      {/* Background glow */}
       <div className="absolute -top-40 right-[-10rem] w-[30rem] h-[30rem] bg-indigo-500/10 blur-[180px]" />
       <div className="absolute bottom-[-12rem] left-[-10rem] w-[30rem] h-[30rem] bg-pink-500/10 blur-[180px]" />
 
@@ -81,7 +77,7 @@ export default function Contact() {
         </p>
 
         <div className="mt-20 grid md:grid-cols-2 gap-14">
-          {/* LEFT */}
+          {/* LEFT — CONTACT INFO */}
           <div className="p-10 rounded-3xl bg-stone-950/70 border border-white/10 backdrop-blur space-y-6">
             <h3 className="text-xl text-white font-medium">
               Let’s Connect
@@ -143,7 +139,7 @@ export default function Contact() {
               {loading ? "Sending..." : "Send Message"}
             </button>
 
-            {/* SUCCESS */}
+            {/* SUCCESS MESSAGE */}
             {success && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -155,9 +151,11 @@ export default function Contact() {
               </motion.div>
             )}
 
-            {/* ERROR */}
+            {/* ERROR MESSAGE */}
             {error && (
-              <p className="text-red-400 text-center pt-2">{error}</p>
+              <p className="text-red-400 text-center pt-2">
+                {error}
+              </p>
             )}
           </form>
         </div>
