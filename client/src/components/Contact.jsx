@@ -1,11 +1,6 @@
 import { motion } from "framer-motion";
-import { FaGithub, FaLinkedin, FaEnvelope, FaCheckCircle } from "react-icons/fa";
+import { FaEnvelope, FaGithub, FaLinkedin, FaCheckCircle } from "react-icons/fa";
 import { useState } from "react";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 },
-};
 
 const API_URL = "https://fani-goud-portfolio.onrender.com/api/contact";
 
@@ -34,16 +29,16 @@ export default function Contact() {
 
       const result = await res.json();
 
-      if (!result.success) {
-        throw new Error("Failed to send message");
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || "Failed to send message");
       }
 
       setSuccess(true);
       e.target.reset();
+
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
-      console.error("Message failed:", err);
-      setError("Message failed. Please try again.");
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -53,56 +48,84 @@ export default function Contact() {
     <motion.section
       id="contact"
       className="relative py-32 px-6 bg-stone-900 overflow-hidden"
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
     >
       {/* Background glow */}
-      <div className="absolute -top-40 right-[-10rem] w-[30rem] h-[30rem] bg-indigo-500/10 blur-[180px]" />
-      <div className="absolute bottom-[-12rem] left-[-10rem] w-[30rem] h-[30rem] bg-pink-500/10 blur-[180px]" />
+
+      <div className="absolute -top-40 right-[-10rem] w-[28rem] h-[28rem] bg-indigo-500/10 blur-[180px]" />
+      <div className="absolute bottom-[-12rem] left-[-10rem] w-[28rem] h-[28rem] bg-pink-500/10 blur-[180px]" />
 
       <div className="relative max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-semibold text-white text-center">
+
+        {/* Title */}
+
+        <h2 className="text-4xl font-semibold text-white text-center">
           Get In Touch
         </h2>
 
         <p className="mt-6 text-center text-gray-400 max-w-2xl mx-auto">
-          Interested in working together or discussing opportunities?
+          Let’s talk about opportunities, collaborations, or ideas.
         </p>
 
         <div className="mt-20 grid md:grid-cols-2 gap-14">
-          {/* LEFT */}
-          <div className="p-10 rounded-3xl bg-stone-950/70 border border-white/10 backdrop-blur space-y-6">
-            <h3 className="text-xl text-white font-medium">Let’s Connect</h3>
 
-            <div className="space-y-4 text-gray-300">
-              <div className="flex items-center gap-3">
+          {/* LEFT — CONTACT INFO */}
+
+          <div className="p-10 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl space-y-8">
+
+            <h3 className="text-xl text-white font-medium">
+              Contact Information
+            </h3>
+
+            <div className="space-y-5 text-gray-300">
+
+              <a
+                href="mailto:mfanigoud@gmail.com"
+                className="flex items-center gap-3 hover:text-white transition"
+              >
                 <FaEnvelope className="text-yellow-400" />
-                <span>mfanigoud@gmail.com</span>
-              </div>
-              <div className="flex items-center gap-3">
+                mfanigoud@gmail.com
+              </a>
+
+              <a
+                href="https://www.linkedin.com/in/fani-goud/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 hover:text-white transition"
+              >
                 <FaLinkedin className="text-yellow-400" />
-                <span>linkedin.com/in/fani-goud</span>
-              </div>
-              <div className="flex items-center gap-3">
+                linkedin.com/in/fani-goud
+              </a>
+
+              <a
+                href="https://github.com/m-fani-goud"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 hover:text-white transition"
+              >
                 <FaGithub className="text-yellow-400" />
-                <span>github.com/m-fani-goud</span>
-              </div>
+                github.com/m-fani-goud
+              </a>
+
             </div>
+
           </div>
 
-          {/* RIGHT — FORM */}
+          {/* RIGHT — CONTACT FORM */}
+
           <form
             onSubmit={handleSubmit}
-            className="p-10 rounded-3xl bg-stone-950/70 border border-white/10 backdrop-blur space-y-6"
+            className="p-10 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl space-y-6"
           >
+
             <input
               name="name"
               placeholder="Your Name"
               required
-              className="w-full p-4 rounded-xl bg-stone-900 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
+              className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
             />
 
             <input
@@ -110,7 +133,7 @@ export default function Contact() {
               type="email"
               placeholder="Your Email"
               required
-              className="w-full p-4 rounded-xl bg-stone-900 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
+              className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
             />
 
             <textarea
@@ -118,34 +141,38 @@ export default function Contact() {
               rows="4"
               placeholder="Your Message"
               required
-              className="w-full p-4 rounded-xl bg-stone-900 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none resize-none"
+              className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none resize-none"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-4 rounded-xl font-medium ${
-                loading ? "bg-gray-500" : "bg-yellow-400 hover:scale-[1.03]"
-              } text-black transition`}
+              className={`w-full py-4 rounded-xl font-medium transition ${
+                loading
+                  ? "bg-gray-500 text-black"
+                  : "bg-yellow-400 hover:scale-[1.03] text-black"
+              }`}
             >
               {loading ? "Sending..." : "Send Message"}
             </button>
 
+            {/* SUCCESS MESSAGE */}
+
             {success && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 text-green-400 justify-center pt-4"
-              >
+              <div className="flex items-center gap-3 text-green-400 justify-center pt-2">
                 <FaCheckCircle />
                 Message sent successfully!
-              </motion.div>
+              </div>
             )}
+
+            {/* ERROR */}
 
             {error && (
               <p className="text-red-400 text-center pt-2">{error}</p>
             )}
+
           </form>
+
         </div>
       </div>
     </motion.section>
