@@ -5,11 +5,13 @@ import { useState } from "react";
 const API_URL = "https://fani-goud-portfolio.onrender.com/api/contact";
 
 export default function Contact() {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const [loading,setLoading] = useState(false);
+  const [success,setSuccess] = useState(false);
+  const [error,setError] = useState("");
+
+  const handleSubmit = async (e)=>{
+
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -18,163 +20,226 @@ export default function Contact() {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    try{
+
+      const res = await fetch(API_URL,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
         },
-        body: JSON.stringify(data),
+        body:JSON.stringify(data)
       });
 
       const result = await res.json();
 
-      if (!res.ok || !result.success) {
+      if(!res.ok || !result.success){
         throw new Error(result.message || "Failed to send message");
       }
 
       setSuccess(true);
       e.target.reset();
 
-      setTimeout(() => setSuccess(false), 4000);
-    } catch (err) {
+      setTimeout(()=>setSuccess(false),4000);
+
+    }catch(err){
+
       setError(err.message || "Something went wrong");
-    } finally {
+
+    }finally{
+
       setLoading(false);
+
     }
+
   };
 
-  return (
-    <motion.section
-      id="contact"
-      className="relative py-32 px-6 bg-stone-900 overflow-hidden"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-    >
-      {/* Background glow */}
+  return(
 
-      <div className="absolute -top-40 right-[-10rem] w-[28rem] h-[28rem] bg-indigo-500/10 blur-[180px]" />
-      <div className="absolute bottom-[-12rem] left-[-10rem] w-[28rem] h-[28rem] bg-pink-500/10 blur-[180px]" />
+<motion.section
+id="contact"
+className="relative py-24 px-6 bg-stone-900 overflow-hidden"
+initial={{opacity:0,y:30}}
+whileInView={{opacity:1,y:0}}
+transition={{duration:0.8}}
+viewport={{once:true}}
+>
 
-      <div className="relative max-w-6xl mx-auto">
+{/* Background Glow */}
 
-        {/* Title */}
+<div className="absolute -top-32 right-[-8rem] w-[22rem] h-[22rem] bg-indigo-500/10 blur-[160px]" />
+<div className="absolute bottom-[-10rem] left-[-8rem] w-[22rem] h-[22rem] bg-pink-500/10 blur-[160px]" />
 
-        <h2 className="text-4xl font-semibold text-white text-center">
-          Get In Touch
-        </h2>
+<div className="relative max-w-6xl mx-auto">
 
-        <p className="mt-6 text-center text-gray-400 max-w-2xl mx-auto">
-          Let’s talk about opportunities, collaborations, or ideas.
-        </p>
+<h2 className="text-4xl font-semibold text-white text-center">
+Get In Touch
+</h2>
 
-        <div className="mt-20 grid md:grid-cols-2 gap-14">
+<p className="mt-5 text-center text-gray-400 max-w-2xl mx-auto">
+Let’s talk about opportunities, collaborations, or ideas.
+</p>
 
-          {/* LEFT — CONTACT INFO */}
+<div className="mt-12 grid md:grid-cols-2 gap-12">
 
-          <div className="p-10 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl space-y-8">
+{/* CONTACT INFO CARD */}
 
-            <h3 className="text-xl text-white font-medium">
-              Contact Information
-            </h3>
+<div className="relative group">
 
-            <div className="space-y-5 text-gray-300">
+{/* Rainbow Glow */}
 
-              <a
-                href="mailto:mfanigoud@gmail.com"
-                className="flex items-center gap-3 hover:text-white transition"
-              >
-                <FaEnvelope className="text-yellow-400" />
-                mfanigoud@gmail.com
-              </a>
+<div className="
+absolute -inset-4
+rounded-3xl
+bg-gradient-to-r
+from-indigo-500
+via-pink-500
+to-yellow-400
+opacity-40
+blur-3xl
+group-hover:opacity-70
+transition duration-500
+"></div>
 
-              <a
-                href="https://www.linkedin.com/in/fani-goud/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 hover:text-white transition"
-              >
-                <FaLinkedin className="text-yellow-400" />
-                linkedin.com/in/fani-goud
-              </a>
+<div className="
+relative
+p-8
+rounded-3xl
+bg-white/5
+border border-white/10
+backdrop-blur-xl
+space-y-6
+">
 
-              <a
-                href="https://github.com/m-fani-goud"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 hover:text-white transition"
-              >
-                <FaGithub className="text-yellow-400" />
-                github.com/m-fani-goud
-              </a>
+<h3 className="text-lg text-white font-medium">
+Contact Information
+</h3>
 
-            </div>
+<div className="space-y-4 text-gray-300">
 
-          </div>
+<a
+href="mailto:mfanigoud@gmail.com"
+className="flex items-center gap-3 hover:text-white transition"
+>
+<FaEnvelope className="text-yellow-400"/>
+mfanigoud@gmail.com
+</a>
 
-          {/* RIGHT — CONTACT FORM */}
+<a
+href="https://www.linkedin.com/in/fani-goud/"
+target="_blank"
+rel="noopener noreferrer"
+className="flex items-center gap-3 hover:text-white transition"
+>
+<FaLinkedin className="text-yellow-400"/>
+linkedin.com/in/fani-goud
+</a>
 
-          <form
-            onSubmit={handleSubmit}
-            className="p-10 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl space-y-6"
-          >
+<a
+href="https://github.com/m-fani-goud"
+target="_blank"
+rel="noopener noreferrer"
+className="flex items-center gap-3 hover:text-white transition"
+>
+<FaGithub className="text-yellow-400"/>
+github.com/m-fani-goud
+</a>
 
-            <input
-              name="name"
-              placeholder="Your Name"
-              required
-              className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
-            />
+</div>
 
-            <input
-              name="email"
-              type="email"
-              placeholder="Your Email"
-              required
-              className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
-            />
+</div>
 
-            <textarea
-              name="message"
-              rows="4"
-              placeholder="Your Message"
-              required
-              className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none resize-none"
-            />
+</div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-4 rounded-xl font-medium transition ${
-                loading
-                  ? "bg-gray-500 text-black"
-                  : "bg-yellow-400 hover:scale-[1.03] text-black"
-              }`}
-            >
-              {loading ? "Sending..." : "Send Message"}
-            </button>
+{/* CONTACT FORM CARD */}
 
-            {/* SUCCESS MESSAGE */}
+<div className="relative group">
 
-            {success && (
-              <div className="flex items-center gap-3 text-green-400 justify-center pt-2">
-                <FaCheckCircle />
-                Message sent successfully!
-              </div>
-            )}
+{/* Rainbow Glow */}
 
-            {/* ERROR */}
+<div className="
+absolute -inset-4
+rounded-3xl
+bg-gradient-to-r
+from-indigo-500
+via-pink-500
+to-yellow-400
+opacity-40
+blur-3xl
+group-hover:opacity-70
+transition duration-500
+"></div>
 
-            {error && (
-              <p className="text-red-400 text-center pt-2">{error}</p>
-            )}
+<form
+onSubmit={handleSubmit}
+className="
+relative
+p-8
+rounded-3xl
+bg-white/5
+border border-white/10
+backdrop-blur-xl
+space-y-5
+"
+>
 
-          </form>
+<input
+name="name"
+placeholder="Your Name"
+required
+className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
+/>
 
-        </div>
-      </div>
-    </motion.section>
+<input
+name="email"
+type="email"
+placeholder="Your Email"
+required
+className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none"
+/>
+
+<textarea
+name="message"
+rows="4"
+placeholder="Your Message"
+required
+className="w-full p-4 rounded-xl bg-black/40 text-gray-200 border border-white/10 focus:border-yellow-400 outline-none resize-none"
+/>
+
+<button
+type="submit"
+disabled={loading}
+className={`w-full py-3 rounded-xl font-medium transition ${
+loading
+? "bg-gray-500 text-black"
+: "bg-yellow-400 hover:scale-[1.03] text-black"
+}`}
+>
+{loading ? "Sending..." : "Send Message"}
+</button>
+
+{success && (
+<div className="flex items-center gap-3 text-green-400 justify-center pt-2">
+<FaCheckCircle/>
+Message sent successfully!
+</div>
+)}
+
+{error && (
+<p className="text-red-400 text-center pt-2">
+{error}
+</p>
+)}
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</motion.section>
+
   );
+
 }

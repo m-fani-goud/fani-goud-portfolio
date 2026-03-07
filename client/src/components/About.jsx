@@ -1,37 +1,71 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { FaReact, FaNodeJs, FaPython, FaDatabase } from "react-icons/fa";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0 },
-};
+const roles = [
+  "Full Stack Developer",
+  "MERN Stack Developer",
+  "Machine Learning Enthusiast",
+  "Problem Solver"
+];
 
 export default function About() {
+
+  const [text, setText] = useState("");
+  const [index, setIndex] = useState(0);
+  const [char, setChar] = useState(0);
+
+  useEffect(() => {
+
+    const typing = setInterval(() => {
+
+      setText(roles[index].slice(0, char + 1));
+      setChar(char + 1);
+
+      if (char === roles[index].length) {
+
+        setTimeout(() => {
+          setChar(0);
+          setIndex((index + 1) % roles.length);
+        }, 1200);
+
+      }
+
+    }, 80);
+
+    return () => clearInterval(typing);
+
+  }, [char, index]);
+
   return (
-    <motion.section
+
+    <section
       id="about"
       className="relative py-32 px-6 bg-slate-900 overflow-hidden"
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
     >
-      {/* Background glow */}
+
+      {/* Background Glow */}
 
       <div className="absolute -top-40 -right-40 w-[32rem] h-[32rem] bg-indigo-500/10 rounded-full blur-[180px]" />
+
       <div className="absolute bottom-[-12rem] left-[-12rem] w-[28rem] h-[28rem] bg-pink-500/10 rounded-full blur-[180px]" />
 
       <div className="relative max-w-6xl mx-auto">
-
-        {/* Title */}
 
         <h2 className="text-3xl md:text-4xl font-semibold text-white text-center">
           About Me
         </h2>
 
-        <div className="mt-20 grid md:grid-cols-2 gap-16 items-start">
+        {/* Typing Text */}
 
-          {/* LEFT SIDE */}
+        <p className="text-center mt-6 text-indigo-400 text-lg font-medium h-6">
+          {text}
+          <span className="animate-pulse">|</span>
+        </p>
+
+        <div className="mt-20 grid md:grid-cols-2 gap-16 items-center">
+
+          {/* LEFT TEXT */}
 
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -43,87 +77,134 @@ export default function About() {
 
             <p className="text-xl text-gray-300 leading-relaxed">
               I’m a <span className="text-white font-medium">Full Stack Developer</span>
-              with a strong interest in building modern web applications
-              that are clean, scalable, and user-friendly.
+              passionate about building scalable applications and solving
+              real-world problems with modern technologies.
             </p>
 
             <p className="text-lg text-gray-400 leading-relaxed">
-              My work focuses on creating end-to-end applications using
-              technologies like <span className="text-white">React, Node.js,
-              Express, and MongoDB</span>. I enjoy designing smooth user
-              interfaces while also building structured backend systems
-              that handle real-world data.
+              My main stack includes <span className="text-white">
+              React, Node.js, Express and MongoDB</span>.
+              I focus on creating smooth user interfaces while building
+              efficient backend systems.
             </p>
 
             <p className="text-lg text-gray-400 leading-relaxed">
-              I have built multiple real-world projects including job
-              portals, dashboards, CRM systems, and business websites.
-              These projects helped me strengthen my understanding of
-              full-stack development, REST APIs, and application
-              architecture.
+              I also explore <span className="text-white">
+              Machine Learning and Data Analysis</span>
+              using Python tools like Pandas, NumPy,
+              Matplotlib and Scikit-Learn.
             </p>
 
           </motion.div>
 
-          {/* RIGHT SIDE */}
+          {/* RIGHT PROFILE CARD */}
 
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative"
+            className="relative flex justify-center"
           >
 
-            <div className="relative p-10 rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur">
+            {/* Floating tech icons */}
 
-              <p className="text-gray-300 text-lg leading-relaxed">
-                I believe great software exists where
-                <span className="text-white"> technology</span>,
-                <span className="text-white"> usability</span>,
-                and <span className="text-white"> problem-solving</span>
-                meet.
-              </p>
+            <motion.div
+              animate={{ y: [0, -20, 0] }}
+              transition={{ repeat: Infinity, duration: 4 }}
+              className="absolute -top-8 left-6 text-sky-400 text-3xl"
+            >
+              <FaReact />
+            </motion.div>
 
-              <p className="mt-6 text-gray-400 leading-relaxed">
-                My goal is to continuously improve my skills,
-                contribute to meaningful projects, and build
-                applications that create real value for users
-                and businesses.
-              </p>
+            <motion.div
+              animate={{ y: [0, -18, 0] }}
+              transition={{ repeat: Infinity, duration: 5 }}
+              className="absolute top-20 -left-6 text-green-400 text-3xl"
+            >
+              <FaNodeJs />
+            </motion.div>
 
-              {/* Quick highlights */}
+            <motion.div
+              animate={{ y: [0, -16, 0] }}
+              transition={{ repeat: Infinity, duration: 6 }}
+              className="absolute -bottom-6 left-10 text-yellow-400 text-3xl"
+            >
+              <FaPython />
+            </motion.div>
 
-              <div className="mt-8 grid grid-cols-2 gap-4 text-sm">
+            <motion.div
+              animate={{ y: [0, -15, 0] }}
+              transition={{ repeat: Infinity, duration: 5 }}
+              className="absolute bottom-10 -right-6 text-indigo-400 text-3xl"
+            >
+              <FaDatabase />
+            </motion.div>
 
-                <div className="border border-white/10 rounded-lg p-4 text-gray-300">
-                  💻 8+ Projects
-                </div>
+            {/* Neon Border Card */}
 
-                <div className="border border-white/10 rounded-lg p-4 text-gray-300">
-                  ⚙ Full Stack MERN
-                </div>
+            <div className="group relative p-[2px] rounded-3xl overflow-hidden">
 
-                <div className="border border-white/10 rounded-lg p-4 text-gray-300">
-                  📊 Machine Learning
-                </div>
+              {/* Neon Gradient Border */}
 
-                <div className="border border-white/10 rounded-lg p-4 text-gray-300">
-                  🚀 Real-world Apps
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-pink-500 to-yellow-400 opacity-0 group-hover:opacity-100 blur-md transition duration-500"></div>
+
+              {/* Card */}
+
+              <div className="relative p-12 rounded-3xl bg-slate-950/80 backdrop-blur border border-white/10 text-center">
+
+                {/* Avatar */}
+
+                <motion.div
+                  animate={{ y: [0, -12, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="relative w-32 h-32 mx-auto"
+                >
+
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500 via-pink-500 to-yellow-400 blur-xl opacity-70 animate-pulse"></div>
+
+                  <div className="relative p-[3px] rounded-full bg-gradient-to-tr from-indigo-500 via-pink-500 to-yellow-400">
+
+                    <img
+                      src="/avatar.png"
+                      alt="Developer"
+                      className="w-32 h-32 rounded-full object-cover border border-white/20"
+                    />
+
+                  </div>
+
+                </motion.div>
+
+                <h3 className="mt-6 text-white text-xl font-semibold">
+                  Fani Goud
+                </h3>
+
+                <p className="text-gray-400 text-sm mt-2">
+                  Full Stack Developer
+                </p>
+
+                {/* Stats */}
+
+                <div className="mt-8 grid grid-cols-2 gap-4 text-sm">
+
+                  <div className="stat-card">💻 8+ Projects</div>
+                  <div className="stat-card">⚙ MERN Stack</div>
+                  <div className="stat-card">📊 Machine Learning</div>
+                  <div className="stat-card">🚀 Real Apps</div>
+
                 </div>
 
               </div>
 
             </div>
 
-            {/* Glow behind card */}
-
-            <div className="absolute -inset-12 rounded-3xl bg-gradient-to-tr from-indigo-500/20 via-pink-500/15 to-yellow-400/15 blur-[160px] opacity-80 -z-10" />
-
           </motion.div>
 
         </div>
+
       </div>
-    </motion.section>
+
+    </section>
+
   );
 }

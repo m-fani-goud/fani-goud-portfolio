@@ -18,3 +18,34 @@ body {
   background-size: 300% 300%;
   animation: gradient 6s ease infinite;
 }
+.skill{
+display:flex;
+align-items:center;
+gap:6px;
+padding:8px 14px;
+border-radius:999px;
+font-size:14px;
+color:#d1d5db;
+border:1px solid rgba(255,255,255,0.1);
+transition:all 0.3s ease;
+}
+.stat-card{
+border:1px solid rgba(255,255,255,0.1);
+border-radius:10px;
+padding:14px;
+color:#d1d5db;
+transition:all 0.3s ease;
+}
+
+.stat-card{
+border:1px solid rgba(255,255,255,0.1);
+border-radius:10px;
+padding:14px;
+color:#d1d5db;
+transition:all 0.3s ease;
+}
+
+.stat-card:hover{
+border-color:#818cf8;
+background:rgba(99,102,241,0.05);
+}
