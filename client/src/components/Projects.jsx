@@ -212,13 +212,14 @@ export default function Projects() {
               <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition">
 
                 <a
-                  href={project.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-white text-black rounded-lg text-sm animate-pulse"
-                >
-                  Live Demo
-                </a>
+                    href={project.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-white text-black rounded-lg text-sm"
+                  >
+                    Live Demo
+                  </a>
+                
 
                 <a
                   href={project.github}
