@@ -182,7 +182,7 @@ export default function Projects() {
           development, machine learning and real world software engineering.
         </p>
 
-        {/* FEATURED */}
+        {/* FEATURED PROJECTS */}
 
         <h3 className="text-2xl text-white mt-20 mb-10">
           ⭐ Featured Projects
@@ -203,23 +203,25 @@ export default function Projects() {
               }}
               className="group relative rounded-3xl overflow-hidden bg-white/5 border border-white/10 hover:border-blue-400 transition-all duration-500"
             >
+
               <img
                 src={project.image}
                 alt={project.title}
                 className="w-full h-52 object-cover group-hover:scale-110 transition duration-700"
               />
 
-              <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition">
+              {/* FIXED OVERLAY FOR MOBILE */}
+
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300">
 
                 <a
-                    href={project.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-white text-black rounded-lg text-sm"
-                  >
-                    Live Demo
-                  </a>
-                
+                  href={project.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-white text-black rounded-lg text-sm"
+                >
+                  Live Demo
+                </a>
 
                 <a
                   href={project.github}

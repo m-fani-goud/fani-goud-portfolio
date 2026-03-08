@@ -12,30 +12,34 @@ const roles = [
 export default function About() {
 
   const [text, setText] = useState("");
-  const [index, setIndex] = useState(0);
-  const [char, setChar] = useState(0);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+
+  /* Typing Animation */
 
   useEffect(() => {
 
-    const typing = setInterval(() => {
+    const currentRole = roles[roleIndex];
 
-      setText(roles[index].slice(0, char + 1));
-      setChar(char + 1);
+    const typing = setTimeout(() => {
 
-      if (char === roles[index].length) {
+      if (charIndex < currentRole.length) {
+        setText(currentRole.slice(0, charIndex + 1));
+        setCharIndex(charIndex + 1);
+      } else {
 
         setTimeout(() => {
-          setChar(0);
-          setIndex((index + 1) % roles.length);
+          setCharIndex(0);
+          setRoleIndex((roleIndex + 1) % roles.length);
         }, 1200);
 
       }
 
     }, 80);
 
-    return () => clearInterval(typing);
+    return () => clearTimeout(typing);
 
-  }, [char, index]);
+  }, [charIndex, roleIndex]);
 
   return (
 
@@ -145,9 +149,9 @@ export default function About() {
 
             <div className="group relative p-[2px] rounded-3xl overflow-hidden">
 
-              {/* Neon Gradient Border */}
+              {/* Neon Gradient Border (Mobile + Hover) */}
 
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-pink-500 to-yellow-400 opacity-0 group-hover:opacity-100 blur-md transition duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-pink-500 to-yellow-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 blur-md transition-all duration-500"></div>
 
               {/* Card */}
 

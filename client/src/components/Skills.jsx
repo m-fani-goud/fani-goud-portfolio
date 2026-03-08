@@ -58,8 +58,6 @@ full stack systems and data driven solutions.
 
 <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-3 gap-12">
 
-{/* CARD COMPONENT STYLE */}
-
 {/* FRONTEND */}
 
 <motion.div
@@ -67,7 +65,7 @@ whileHover={{y:-6}}
 className="group relative p-10 rounded-3xl bg-zinc-950/60 backdrop-blur border border-white/10 hover:border-indigo-400 transition overflow-hidden"
 >
 
-<div className="absolute inset-0 rounded-3xl border border-indigo-400 opacity-0 group-hover:opacity-100 blur-md transition"></div>
+<div className="absolute inset-0 rounded-3xl border border-indigo-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 blur-md transition-all duration-500"></div>
 
 <h3 className="text-xl font-semibold text-white mb-6">
 Frontend Development
@@ -75,18 +73,9 @@ Frontend Development
 
 <div className="flex flex-wrap gap-3">
 
-<span className="skill group-hover:text-sky-400">
-<FaReact/> React
-</span>
-
-<span className="skill group-hover:text-yellow-400">
-<SiJavascript/> JavaScript
-</span>
-
-<span className="skill group-hover:text-cyan-400">
-<SiTailwindcss/> Tailwind
-</span>
-
+<span className="skill group-hover:text-sky-400 flex items-center gap-2"><FaReact/> React</span>
+<span className="skill group-hover:text-yellow-400 flex items-center gap-2"><SiJavascript/> JavaScript</span>
+<span className="skill group-hover:text-cyan-400 flex items-center gap-2"><SiTailwindcss/> Tailwind</span>
 <span className="skill">🌐 HTML</span>
 <span className="skill">🎨 CSS</span>
 
@@ -100,7 +89,7 @@ whileHover={{y:-6}}
 className="group relative p-10 rounded-3xl bg-zinc-950/60 backdrop-blur border border-white/10 hover:border-green-400 transition overflow-hidden"
 >
 
-<div className="absolute inset-0 rounded-3xl border border-green-400 opacity-0 group-hover:opacity-100 blur-md transition"></div>
+<div className="absolute inset-0 rounded-3xl border border-green-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 blur-md transition-all duration-500"></div>
 
 <h3 className="text-xl font-semibold text-white mb-6">
 Backend Development
@@ -108,10 +97,7 @@ Backend Development
 
 <div className="flex flex-wrap gap-3">
 
-<span className="skill group-hover:text-green-400">
-<FaNodeJs/> Node.js
-</span>
-
+<span className="skill group-hover:text-green-400 flex items-center gap-2"><FaNodeJs/> Node.js</span>
 <span className="skill">🚀 Express</span>
 <span className="skill">⚡ REST APIs</span>
 <span className="skill">🔐 Authentication</span>
@@ -126,7 +112,7 @@ whileHover={{y:-6}}
 className="group relative p-10 rounded-3xl bg-zinc-950/60 backdrop-blur border border-white/10 hover:border-emerald-400 transition overflow-hidden"
 >
 
-<div className="absolute inset-0 rounded-3xl border border-emerald-400 opacity-0 group-hover:opacity-100 blur-md transition"></div>
+<div className="absolute inset-0 rounded-3xl border border-emerald-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 blur-md transition-all duration-500"></div>
 
 <h3 className="text-xl font-semibold text-white mb-6">
 Databases
@@ -134,14 +120,8 @@ Databases
 
 <div className="flex flex-wrap gap-3">
 
-<span className="skill group-hover:text-green-400">
-<SiMongodb/> MongoDB
-</span>
-
-<span className="skill group-hover:text-blue-400">
-<SiMysql/> MySQL
-</span>
-
+<span className="skill group-hover:text-green-400 flex items-center gap-2"><SiMongodb/> MongoDB</span>
+<span className="skill group-hover:text-blue-400 flex items-center gap-2"><SiMysql/> MySQL</span>
 <span className="skill">🗄 SQLite</span>
 
 </div>
@@ -154,7 +134,7 @@ whileHover={{y:-6}}
 className="group relative p-10 rounded-3xl bg-zinc-950/60 backdrop-blur border border-white/10 hover:border-yellow-400 transition overflow-hidden"
 >
 
-<div className="absolute inset-0 rounded-3xl border border-yellow-400 opacity-0 group-hover:opacity-100 blur-md transition"></div>
+<div className="absolute inset-0 rounded-3xl border border-yellow-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 blur-md transition-all duration-500"></div>
 
 <h3 className="text-xl font-semibold text-white mb-6">
 Programming
@@ -162,18 +142,9 @@ Programming
 
 <div className="flex flex-wrap gap-3">
 
-<span className="skill group-hover:text-yellow-400">
-<SiJavascript/> JavaScript
-</span>
-
-<span className="skill group-hover:text-yellow-300">
-<FaPython/> Python
-</span>
-
-<span className="skill group-hover:text-red-400">
-<FaJava/> Java
-</span>
-
+<span className="skill group-hover:text-yellow-400 flex items-center gap-2"><SiJavascript/> JavaScript</span>
+<span className="skill group-hover:text-yellow-300 flex items-center gap-2"><FaPython/> Python</span>
+<span className="skill group-hover:text-red-400 flex items-center gap-2"><FaJava/> Java</span>
 <span className="skill">💻 C</span>
 
 </div>
@@ -186,7 +157,7 @@ whileHover={{y:-6}}
 className="group relative p-10 rounded-3xl bg-zinc-950/60 backdrop-blur border border-white/10 hover:border-orange-400 transition overflow-hidden"
 >
 
-<div className="absolute inset-0 rounded-3xl border border-orange-400 opacity-0 group-hover:opacity-100 blur-md transition"></div>
+<div className="absolute inset-0 rounded-3xl border border-orange-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 blur-md transition-all duration-500"></div>
 
 <h3 className="text-xl font-semibold text-white mb-6">
 Machine Learning & Data Analysis
@@ -194,23 +165,11 @@ Machine Learning & Data Analysis
 
 <div className="flex flex-wrap gap-3">
 
-<span className="skill group-hover:text-yellow-300">
-<SiPandas/> Pandas
-</span>
-
-<span className="skill group-hover:text-blue-400">
-<SiNumpy/> NumPy
-</span>
-
-<span className="skill group-hover:text-orange-400">
-<TbChartHistogram/> Matplotlib
-</span>
-
+<span className="skill group-hover:text-yellow-300 flex items-center gap-2"><SiPandas/> Pandas</span>
+<span className="skill group-hover:text-blue-400 flex items-center gap-2"><SiNumpy/> NumPy</span>
+<span className="skill group-hover:text-orange-400 flex items-center gap-2"><TbChartHistogram/> Matplotlib</span>
 <span className="skill">📊 Seaborn</span>
-
-<span className="skill group-hover:text-orange-500">
-<SiScikitlearn/> Scikit Learn
-</span>
+<span className="skill group-hover:text-orange-500 flex items-center gap-2"><SiScikitlearn/> Scikit Learn</span>
 
 </div>
 </motion.div>
@@ -222,7 +181,7 @@ whileHover={{y:-6}}
 className="group relative p-10 rounded-3xl bg-zinc-950/60 backdrop-blur border border-white/10 hover:border-blue-400 transition overflow-hidden"
 >
 
-<div className="absolute inset-0 rounded-3xl border border-blue-400 opacity-0 group-hover:opacity-100 blur-md transition"></div>
+<div className="absolute inset-0 rounded-3xl border border-blue-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 blur-md transition-all duration-500"></div>
 
 <h3 className="text-xl font-semibold text-white mb-6">
 Tools & Platforms
@@ -230,16 +189,9 @@ Tools & Platforms
 
 <div className="flex flex-wrap gap-3">
 
-<span className="skill group-hover:text-orange-500">
-<FaGitAlt/> Git
-</span>
-
+<span className="skill group-hover:text-orange-500 flex items-center gap-2"><FaGitAlt/> Git</span>
 <span className="skill">🐙 GitHub</span>
-
-<span className="skill group-hover:text-blue-400">
-<SiDocker/> Docker
-</span>
-
+<span className="skill group-hover:text-blue-400 flex items-center gap-2"><SiDocker/> Docker</span>
 <span className="skill">▲ Vercel</span>
 
 </div>
