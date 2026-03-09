@@ -37,7 +37,7 @@ const featuredProjects = [
     ],
     tech: ["React", "Node.js", "MongoDB", "Tailwind"],
     github: "https://github.com/m-fani-goud",
-    live: "https://careerforge-job-portal-3ep9w3810-mandala-fanis-projects.vercel.app",
+    live: "https://careerforge-job-portal.vercel.app",
     image: "/projects/careerforge.png"
   },
   {
